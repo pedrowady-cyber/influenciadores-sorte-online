@@ -1,0 +1,788 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Influenciadores - Sorte Online</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 40px 20px;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 50px;
+            color: white;
+        }
+
+        header h1 {
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.2);
+        }
+
+        header p {
+            font-size: 1.1rem;
+            opacity: 0.9;
+        }
+
+        .summary {
+            background: white;
+            padding: 20px 30px;
+            border-radius: 15px;
+            margin-bottom: 40px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+            display: flex;
+            justify-content: space-around;
+            flex-wrap: wrap;
+            gap: 20px;
+        }
+
+        .summary-item {
+            text-align: center;
+        }
+
+        .summary-item .number {
+            font-size: 2.5rem;
+            font-weight: bold;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .summary-item .label {
+            color: #666;
+            font-size: 0.9rem;
+            margin-top: 5px;
+        }
+
+        .category-section {
+            margin-bottom: 60px;
+        }
+
+        .category-title {
+            background: white;
+            padding: 15px 30px;
+            border-radius: 10px;
+            margin-bottom: 30px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+        }
+
+        .category-title h2 {
+            color: #667eea;
+            font-size: 1.8rem;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .category-title h2 i {
+            font-size: 1.5rem;
+        }
+
+        .category-title .count {
+            margin-left: auto;
+            font-size: 1rem;
+            color: #999;
+            font-weight: normal;
+        }
+
+        .influencers-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+            gap: 25px;
+        }
+
+        .influencer-card {
+            background: white;
+            border-radius: 15px;
+            padding: 25px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.15);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .influencer-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 15px 40px rgba(0,0,0,0.25);
+        }
+
+        .influencer-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 5px;
+            background: linear-gradient(90deg, #667eea 0%, #764ba2 100%);
+        }
+
+        .sports-category .influencer-card::before {
+            background: linear-gradient(90deg, #28a745 0%, #20c997 100%);
+        }
+
+        .sports-category .category-title h2 {
+            color: #28a745;
+        }
+
+        .influencer-header {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            margin-bottom: 15px;
+        }
+
+        .profile-pic-wrapper {
+            position: relative;
+            width: 70px;
+            height: 70px;
+            flex-shrink: 0;
+        }
+
+        .profile-pic {
+            width: 70px;
+            height: 70px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 3px solid #f0f0f0;
+            transition: border-color 0.3s ease;
+        }
+
+        .influencer-card:hover .profile-pic {
+            border-color: #667eea;
+        }
+
+        .profile-pic-fallback {
+            width: 70px;
+            height: 70px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 1.5rem;
+            font-weight: bold;
+            border: 3px solid #f0f0f0;
+        }
+
+        .influencer-info {
+            flex: 1;
+            min-width: 0;
+        }
+
+        .influencer-info h3 {
+            font-size: 1.2rem;
+            color: #333;
+            margin-bottom: 5px;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .username {
+            color: #667eea;
+            font-size: 0.9rem;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .stats {
+            background: #f8f9fa;
+            padding: 12px;
+            border-radius: 10px;
+            margin-bottom: 15px;
+        }
+
+        .stats-item {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            color: #555;
+            font-size: 0.9rem;
+        }
+
+        .stats-item i {
+            color: #667eea;
+            margin-right: 8px;
+        }
+
+        .followers {
+            font-size: 1.1rem;
+            font-weight: bold;
+            color: #764ba2;
+        }
+
+        .social-platform {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 6px 12px;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            margin-bottom: 15px;
+        }
+
+        .cta-button {
+            display: block;
+            width: 100%;
+            padding: 12px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            text-align: center;
+            text-decoration: none;
+            border-radius: 8px;
+            font-weight: 600;
+            transition: opacity 0.3s ease;
+        }
+
+        .cta-button:hover {
+            opacity: 0.9;
+        }
+
+        .cta-button i {
+            margin-right: 8px;
+        }
+
+        @media (max-width: 768px) {
+            header h1 {
+                font-size: 2rem;
+            }
+
+            .influencers-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .category-title h2 {
+                font-size: 1.4rem;
+                flex-wrap: wrap;
+            }
+
+            .summary {
+                gap: 15px;
+            }
+
+            .summary-item .number {
+                font-size: 2rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>🎯 Influenciadores Estratégicos</h1>
+            <p>Mapeamento de perfis para parcerias Sorte Online</p>
+        </header>
+
+        <div class="summary">
+            <div class="summary-item">
+                <div class="number">15</div>
+                <div class="label">Total de Influenciadores</div>
+            </div>
+            <div class="summary-item">
+                <div class="number">8</div>
+                <div class="label">Institucional</div>
+            </div>
+            <div class="summary-item">
+                <div class="number">7</div>
+                <div class="label">Aposta Esportiva</div>
+            </div>
+        </div>
+
+        <div class="category-section">
+            <div class="category-title">
+                <h2>
+                    <i class="fas fa-building"></i>
+                    INSTITUCIONAL
+                    <span class="count">8 influenciadores</span>
+                </h2>
+            </div>
+            
+            <div class="influencers-grid">
+                <div class="influencer-card">
+                    <div class="influencer-header">
+                        <div class="profile-pic-wrapper">
+                            <img src="fotos/alecolzzani.jpg" alt="alecolzzani" class="profile-pic" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
+                            <div class="profile-pic-fallback" style="display:none;">AC</div>
+                        </div>
+                        <div class="influencer-info">
+                            <h3>Ale Colzzani</h3>
+                            <div class="username">
+                                <i class="fas fa-at"></i>
+                                alecolzzani
+                            </div>
+                        </div>
+                    </div>
+                    <div class="social-platform">
+                        <i class="fab fa-instagram"></i>
+                        Instagram
+                    </div>
+                    <div class="stats">
+                        <div class="stats-item">
+                            <span><i class="fas fa-users"></i>Seguidores</span>
+                            <span class="followers">93 MIL</span>
+                        </div>
+                    </div>
+                    <a href="https://www.instagram.com/alecolzzani/" target="_blank" class="cta-button">
+                        <i class="fas fa-external-link-alt"></i>
+                        Visitar Perfil
+                    </a>
+                </div>
+
+                <div class="influencer-card">
+                    <div class="influencer-header">
+                        <div class="profile-pic-wrapper">
+                            <img src="fotos/amauryftv.jpg" alt="amauryftv" class="profile-pic" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
+                            <div class="profile-pic-fallback" style="display:none;">AF</div>
+                        </div>
+                        <div class="influencer-info">
+                            <h3>Amaury Feijó</h3>
+                            <div class="username">
+                                <i class="fas fa-at"></i>
+                                amauryftv
+                            </div>
+                        </div>
+                    </div>
+                    <div class="social-platform">
+                        <i class="fab fa-instagram"></i>
+                        Instagram
+                    </div>
+                    <div class="stats">
+                        <div class="stats-item">
+                            <span><i class="fas fa-users"></i>Seguidores</span>
+                            <span class="followers">86 MIL</span>
+                        </div>
+                    </div>
+                    <a href="https://www.instagram.com/amauryftv/" target="_blank" class="cta-button">
+                        <i class="fas fa-external-link-alt"></i>
+                        Visitar Perfil
+                    </a>
+                </div>
+
+                <div class="influencer-card">
+                    <div class="influencer-header">
+                        <div class="profile-pic-wrapper">
+                            <img src="fotos/jeffinho12_.jpg" alt="jeffinho12_" class="profile-pic" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
+                            <div class="profile-pic-fallback" style="display:none;">JH</div>
+                        </div>
+                        <div class="influencer-info">
+                            <h3>Jefferson Honorato</h3>
+                            <div class="username">
+                                <i class="fas fa-at"></i>
+                                jeffinho12_
+                            </div>
+                        </div>
+                    </div>
+                    <div class="social-platform">
+                        <i class="fab fa-instagram"></i>
+                        Instagram
+                    </div>
+                    <div class="stats">
+                        <div class="stats-item">
+                            <span><i class="fas fa-users"></i>Seguidores</span>
+                            <span class="followers">79,9 MIL</span>
+                        </div>
+                    </div>
+                    <a href="https://www.instagram.com/jeffinho12_/" target="_blank" class="cta-button">
+                        <i class="fas fa-external-link-alt"></i>
+                        Visitar Perfil
+                    </a>
+                </div>
+
+                <div class="influencer-card">
+                    <div class="influencer-header">
+                        <div class="profile-pic-wrapper">
+                            <img src="fotos/bbimolina.jpg" alt="bbimolina" class="profile-pic" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
+                            <div class="profile-pic-fallback" style="display:none;">BM</div>
+                        </div>
+                        <div class="influencer-info">
+                            <h3>Bianca Molina</h3>
+                            <div class="username">
+                                <i class="fas fa-at"></i>
+                                bbimolina
+                            </div>
+                        </div>
+                    </div>
+                    <div class="social-platform">
+                        <i class="fab fa-instagram"></i>
+                        Instagram
+                    </div>
+                    <div class="stats">
+                        <div class="stats-item">
+                            <span><i class="fas fa-users"></i>Seguidores</span>
+                            <span class="followers">63,7 MIL</span>
+                        </div>
+                    </div>
+                    <a href="https://www.instagram.com/bbimolina/" target="_blank" class="cta-button">
+                        <i class="fas fa-external-link-alt"></i>
+                        Visitar Perfil
+                    </a>
+                </div>
+
+                <div class="influencer-card">
+                    <div class="influencer-header">
+                        <div class="profile-pic-wrapper">
+                            <img src="fotos/israelpires.jpg" alt="israelpires" class="profile-pic" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
+                            <div class="profile-pic-fallback" style="display:none;">IP</div>
+                        </div>
+                        <div class="influencer-info">
+                            <h3>Israel Pires</h3>
+                            <div class="username">
+                                <i class="fas fa-at"></i>
+                                israelpires
+                            </div>
+                        </div>
+                    </div>
+                    <div class="social-platform">
+                        <i class="fab fa-instagram"></i>
+                        Instagram
+                    </div>
+                    <div class="stats">
+                        <div class="stats-item">
+                            <span><i class="fas fa-users"></i>Seguidores</span>
+                            <span class="followers">168 MIL</span>
+                        </div>
+                    </div>
+                    <a href="https://www.instagram.com/israelpires/" target="_blank" class="cta-button">
+                        <i class="fas fa-external-link-alt"></i>
+                        Visitar Perfil
+                    </a>
+                </div>
+
+                <div class="influencer-card">
+                    <div class="influencer-header">
+                        <div class="profile-pic-wrapper">
+                            <img src="fotos/gabrielle.gms.jpg" alt="gabrielle.gms" class="profile-pic" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
+                            <div class="profile-pic-fallback" style="display:none;">GG</div>
+                        </div>
+                        <div class="influencer-info">
+                            <h3>Gabrielle Gomes</h3>
+                            <div class="username">
+                                <i class="fas fa-at"></i>
+                                gabrielle.gms
+                            </div>
+                        </div>
+                    </div>
+                    <div class="social-platform">
+                        <i class="fab fa-instagram"></i>
+                        Instagram
+                    </div>
+                    <div class="stats">
+                        <div class="stats-item">
+                            <span><i class="fas fa-users"></i>Seguidores</span>
+                            <span class="followers">53 MIL</span>
+                        </div>
+                    </div>
+                    <a href="https://www.instagram.com/gabrielle.gms/" target="_blank" class="cta-button">
+                        <i class="fas fa-external-link-alt"></i>
+                        Visitar Perfil
+                    </a>
+                </div>
+
+                <div class="influencer-card">
+                    <div class="influencer-header">
+                        <div class="profile-pic-wrapper">
+                            <img src="fotos/rogertoshi.jpg" alt="rogertoshi" class="profile-pic" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
+                            <div class="profile-pic-fallback" style="display:none;">RT</div>
+                        </div>
+                        <div class="influencer-info">
+                            <h3>Roger Toshi</h3>
+                            <div class="username">
+                                <i class="fas fa-at"></i>
+                                rogertoshi
+                            </div>
+                        </div>
+                    </div>
+                    <div class="social-platform">
+                        <i class="fab fa-instagram"></i>
+                        Instagram
+                    </div>
+                    <div class="stats">
+                        <div class="stats-item">
+                            <span><i class="fas fa-users"></i>Seguidores</span>
+                            <span class="followers">263 MIL</span>
+                        </div>
+                    </div>
+                    <a href="https://www.instagram.com/rogertoshi/" target="_blank" class="cta-button">
+                        <i class="fas fa-external-link-alt"></i>
+                        Visitar Perfil
+                    </a>
+                </div>
+
+                <div class="influencer-card">
+                    <div class="influencer-header">
+                        <div class="profile-pic-wrapper">
+                            <img src="fotos/conradoadolpho.jpg" alt="conradoadolpho" class="profile-pic" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
+                            <div class="profile-pic-fallback" style="display:none;">CA</div>
+                        </div>
+                        <div class="influencer-info">
+                            <h3>Conrado Adolpho</h3>
+                            <div class="username">
+                                <i class="fas fa-at"></i>
+                                conradoadolpho
+                            </div>
+                        </div>
+                    </div>
+                    <div class="social-platform">
+                        <i class="fab fa-instagram"></i>
+                        Instagram
+                    </div>
+                    <div class="stats">
+                        <div class="stats-item">
+                            <span><i class="fas fa-users"></i>Seguidores</span>
+                            <span class="followers">823 MIL</span>
+                        </div>
+                    </div>
+                    <a href="https://www.instagram.com/conradoadolpho/" target="_blank" class="cta-button">
+                        <i class="fas fa-external-link-alt"></i>
+                        Visitar Perfil
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <div class="category-section sports-category">
+            <div class="category-title">
+                <h2>
+                    <i class="fas fa-futbol"></i>
+                    APOSTA ESPORTIVA
+                    <span class="count">7 influenciadores</span>
+                </h2>
+            </div>
+            
+            <div class="influencers-grid">
+                <div class="influencer-card">
+                    <div class="influencer-header">
+                        <div class="profile-pic-wrapper">
+                            <img src="fotos/shellfifa.jpg" alt="shellfifa" class="profile-pic" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
+                            <div class="profile-pic-fallback" style="display:none;">LF</div>
+                        </div>
+                        <div class="influencer-info">
+                            <h3>Lucas Fiorin</h3>
+                            <div class="username">
+                                <i class="fas fa-at"></i>
+                                shellfifa
+                            </div>
+                        </div>
+                    </div>
+                    <div class="social-platform">
+                        <i class="fab fa-instagram"></i>
+                        Instagram
+                    </div>
+                    <div class="stats">
+                        <div class="stats-item">
+                            <span><i class="fas fa-users"></i>Seguidores</span>
+                            <span class="followers">115 MIL</span>
+                        </div>
+                    </div>
+                    <a href="https://www.instagram.com/shellfifa/" target="_blank" class="cta-button">
+                        <i class="fas fa-external-link-alt"></i>
+                        Visitar Perfil
+                    </a>
+                </div>
+
+                <div class="influencer-card">
+                    <div class="influencer-header">
+                        <div class="profile-pic-wrapper">
+                            <img src="fotos/binhooficialmg.jpg" alt="binhooficialmg" class="profile-pic" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
+                            <div class="profile-pic-fallback" style="display:none;">RL</div>
+                        </div>
+                        <div class="influencer-info">
+                            <h3>Robson Leite</h3>
+                            <div class="username">
+                                <i class="fas fa-at"></i>
+                                binhooficialmg
+                            </div>
+                        </div>
+                    </div>
+                    <div class="social-platform">
+                        <i class="fab fa-instagram"></i>
+                        Instagram
+                    </div>
+                    <div class="stats">
+                        <div class="stats-item">
+                            <span><i class="fas fa-users"></i>Seguidores</span>
+                            <span class="followers">78 MIL</span>
+                        </div>
+                    </div>
+                    <a href="https://www.instagram.com/binhooficialmg/" target="_blank" class="cta-button">
+                        <i class="fas fa-external-link-alt"></i>
+                        Visitar Perfil
+                    </a>
+                </div>
+
+                <div class="influencer-card">
+                    <div class="influencer-header">
+                        <div class="profile-pic-wrapper">
+                            <img src="fotos/danilogomesofc.jpg" alt="danilogomesofc" class="profile-pic" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
+                            <div class="profile-pic-fallback" style="display:none;">DG</div>
+                        </div>
+                        <div class="influencer-info">
+                            <h3>Danilo Gomes</h3>
+                            <div class="username">
+                                <i class="fas fa-at"></i>
+                                danilogomesofc
+                            </div>
+                        </div>
+                    </div>
+                    <div class="social-platform">
+                        <i class="fab fa-instagram"></i>
+                        Instagram
+                    </div>
+                    <div class="stats">
+                        <div class="stats-item">
+                            <span><i class="fas fa-users"></i>Seguidores</span>
+                            <span class="followers">375 MIL</span>
+                        </div>
+                    </div>
+                    <a href="https://www.instagram.com/danilogomesofc/" target="_blank" class="cta-button">
+                        <i class="fas fa-external-link-alt"></i>
+                        Visitar Perfil
+                    </a>
+                </div>
+
+                <div class="influencer-card">
+                    <div class="influencer-header">
+                        <div class="profile-pic-wrapper">
+                            <img src="fotos/arllonsouza.jpg" alt="arllonsouza" class="profile-pic" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
+                            <div class="profile-pic-fallback" style="display:none;">AS</div>
+                        </div>
+                        <div class="influencer-info">
+                            <h3>Arllon Souza</h3>
+                            <div class="username">
+                                <i class="fas fa-at"></i>
+                                arllonsouza
+                            </div>
+                        </div>
+                    </div>
+                    <div class="social-platform">
+                        <i class="fab fa-instagram"></i>
+                        Instagram
+                    </div>
+                    <div class="stats">
+                        <div class="stats-item">
+                            <span><i class="fas fa-users"></i>Seguidores</span>
+                            <span class="followers">45 MIL</span>
+                        </div>
+                    </div>
+                    <a href="https://www.instagram.com/arllonsouza/" target="_blank" class="cta-button">
+                        <i class="fas fa-external-link-alt"></i>
+                        Visitar Perfil
+                    </a>
+                </div>
+
+                <div class="influencer-card">
+                    <div class="influencer-header">
+                        <div class="profile-pic-wrapper">
+                            <img src="fotos/sabrinearaujo.jpg" alt="sabrinearaujo" class="profile-pic" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
+                            <div class="profile-pic-fallback" style="display:none;">SA</div>
+                        </div>
+                        <div class="influencer-info">
+                            <h3>Sabrine Araújo</h3>
+                            <div class="username">
+                                <i class="fas fa-at"></i>
+                                sabrinearaujo
+                            </div>
+                        </div>
+                    </div>
+                    <div class="social-platform">
+                        <i class="fab fa-instagram"></i>
+                        Instagram
+                    </div>
+                    <div class="stats">
+                        <div class="stats-item">
+                            <span><i class="fas fa-users"></i>Seguidores</span>
+                            <span class="followers">38 MIL</span>
+                        </div>
+                    </div>
+                    <a href="https://www.instagram.com/sabrinearaujo/" target="_blank" class="cta-button">
+                        <i class="fas fa-external-link-alt"></i>
+                        Visitar Perfil
+                    </a>
+                </div>
+
+                <div class="influencer-card">
+                    <div class="influencer-header">
+                        <div class="profile-pic-wrapper">
+                            <img src="fotos/gabrielle.gms.jpg" alt="gabrielle.gms" class="profile-pic" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
+                            <div class="profile-pic-fallback" style="display:none;">GG</div>
+                        </div>
+                        <div class="influencer-info">
+                            <h3>Gabrielle Gomes</h3>
+                            <div class="username">
+                                <i class="fas fa-at"></i>
+                                gabrielle.gms
+                            </div>
+                        </div>
+                    </div>
+                    <div class="social-platform">
+                        <i class="fab fa-instagram"></i>
+                        Instagram
+                    </div>
+                    <div class="stats">
+                        <div class="stats-item">
+                            <span><i class="fas fa-users"></i>Seguidores</span>
+                            <span class="followers">53 MIL</span>
+                        </div>
+                    </div>
+                    <a href="https://www.instagram.com/gabrielle.gms/" target="_blank" class="cta-button">
+                        <i class="fas fa-external-link-alt"></i>
+                        Visitar Perfil
+                    </a>
+                </div>
+
+                <div class="influencer-card">
+                    <div class="influencer-header">
+                        <div class="profile-pic-wrapper">
+                            <img src="fotos/notagfut.jpg" alt="notagfut" class="profile-pic" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
+                            <div class="profile-pic-fallback" style="display:none;">MF</div>
+                        </div>
+                        <div class="influencer-info">
+                            <h3>Márlon Ferreira</h3>
+                            <div class="username">
+                                <i class="fas fa-at"></i>
+                                notagfut
+                            </div>
+                        </div>
+                    </div>
+                    <div class="social-platform">
+                        <i class="fab fa-instagram"></i>
+                        Instagram
+                    </div>
+                    <div class="stats">
+                        <div class="stats-item">
+                            <span><i class="fas fa-users"></i>Seguidores</span>
+                            <span class="followers">66 MIL</span>
+                        </div>
+                    </div>
+                    <a href="https://www.instagram.com/notagfut/" target="_blank" class="cta-button">
+                        <i class="fas fa-external-link-alt"></i>
+                        Visitar Perfil
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
